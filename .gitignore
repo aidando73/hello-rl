@@ -7,3 +7,4 @@ outputs/
 grpo_saved_lora/
 llama-3.1-8b-grpo-4bit-merged/
 qwen2.5-3b-4bit-merged/
+llama-3.1-8b-4bit-merged/
