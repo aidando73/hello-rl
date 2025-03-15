@@ -132,10 +132,10 @@ from unsloth import is_bfloat16_supported
 
 from trl import GRPOConfig, GRPOTrainer
 training_args = GRPOConfig(
-    # Qwen specific
-    use_vllm = True, # use vLLM for fast inference!
-    bf16 = is_bfloat16_supported(),
-    fp16 = not is_bfloat16_supported(),
+    # # Qwen specific
+    # use_vllm = True, # use vLLM for fast inference!
+    # bf16 = is_bfloat16_supported(),
+    # fp16 = not is_bfloat16_supported(),
 
     # General
     learning_rate = 5e-6,
@@ -144,7 +144,7 @@ training_args = GRPOConfig(
     weight_decay = 0.1,
     warmup_ratio = 0.1,
     lr_scheduler_type = "cosine",
-    optim = "adamw_8bit",
+    optim = "paged_adamw_8bit",
     logging_steps = 1,
     per_device_train_batch_size = 1,
     gradient_accumulation_steps = 1, # Increase to 4 for smoother training
