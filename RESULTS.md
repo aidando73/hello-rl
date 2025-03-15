@@ -8,7 +8,8 @@ Pass@8 (at least 1 correct): 1273/1319 (96.51%)
 Majority@8 (majority correct): 1133/1319 (85.90%)
 
 ### 4 bit merged model - baseline
-
+Pass@8 (at least 1 correct): 1143/1319 (86.66%)
+Majority@8 (majority correct): 1118/1319 (84.76%)
 
 ### 4 bit merged model after 250 steps
 Pass@8 (at least 1 correct): 1140/1319 (86.43%)
