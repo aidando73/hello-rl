@@ -1,5 +1,8 @@
 from unsloth import FastLanguageModel
 import torch
+
+
+
 max_seq_length = 1024 # Can increase for longer reasoning traces
 lora_rank = 32 # Larger rank = smarter, but slower
 
@@ -139,9 +142,10 @@ training_args = GRPOConfig(
     num_generations = 6, # Decrease if out of memory
     max_prompt_length = max_prompt_length,
     max_completion_length = max_seq_length - max_prompt_length,
-    # num_train_epochs = 1, # Set to 1 for a full training run
-    max_steps = 250,
-    save_steps = 250,
+    num_train_epochs = 100, # Set to 1 for a full training run
+    # max_steps = 250,
+    save_steps = 500,
+    save_total_limit = 5,
     max_grad_norm = 0.1,
     report_to = "wandb", # Can use Weights & Biases
     output_dir = "outputs",
@@ -162,4 +166,9 @@ trainer = GRPOTrainer(
 )
 trainer.train()
 
-model.save_lora("grpo_saved_lora")
+
+from datetime import datetime
+
+# Get current date and time
+current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+model.save_lora(f"grpo_saved_lora_{current_datetime}")
