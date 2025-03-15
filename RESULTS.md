@@ -11,3 +11,12 @@ Majority@8 (majority correct): 1133/1319 (85.90%)
 Pass@8 (at least 1 correct): 1140/1319 (86.43%)
 Majority@8 (majority correct): 1117/1319 (84.69%)
 
+
+
+
+## Qwen 2.5 3B Instruct
+
+### Baseline
+Pass@8 (at least 1 correct): 1167/1319 (88.48%)
+Majority@8 (majority correct): 1128/1319 (85.52%)
+

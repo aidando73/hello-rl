@@ -1,13 +1,14 @@
 from unsloth import FastLanguageModel
 import torch
 
-
+MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+# MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 
 max_seq_length = 1024 # Can increase for longer reasoning traces
 lora_rank = 32 # Larger rank = smarter, but slower
 
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "meta-llama/meta-Llama-3.1-8B-Instruct",
+    model_name = MODEL_NAME,
     max_seq_length = max_seq_length,
     load_in_4bit = True, # False for LoRA 16bit
     fast_inference = True, # Enable vLLM fast inference
@@ -127,19 +128,27 @@ import os
 
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
+from unsloth import is_bfloat16_supported
+
 from trl import GRPOConfig, GRPOTrainer
 training_args = GRPOConfig(
+    # Qwen specific
+    use_vllm = True, # use vLLM for fast inference!
+    bf16 = is_bfloat16_supported(),
+    fp16 = not is_bfloat16_supported(),
+
+    # General
     learning_rate = 5e-6,
     adam_beta1 = 0.9,
     adam_beta2 = 0.99,
     weight_decay = 0.1,
     warmup_ratio = 0.1,
     lr_scheduler_type = "cosine",
-    optim = "paged_adamw_8bit",
+    optim = "adamw_8bit",
     logging_steps = 1,
     per_device_train_batch_size = 1,
     gradient_accumulation_steps = 1, # Increase to 4 for smoother training
-    num_generations = 6, # Decrease if out of memory
+    num_generations = 8, # Decrease if out of memory
     max_prompt_length = max_prompt_length,
     max_completion_length = max_seq_length - max_prompt_length,
     num_train_epochs = 100, # Set to 1 for a full training run
