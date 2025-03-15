@@ -1,8 +1,9 @@
 from unsloth import FastLanguageModel
 import torch
 
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
-# MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
+# MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
+LOAD_IN_4BIT = False
 
 max_seq_length = 1024 # Can increase for longer reasoning traces
 lora_rank = 32 # Larger rank = smarter, but slower
@@ -10,7 +11,7 @@ lora_rank = 32 # Larger rank = smarter, but slower
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = MODEL_NAME,
     max_seq_length = max_seq_length,
-    load_in_4bit = True, # False for LoRA 16bit
+    load_in_4bit = LOAD_IN_4BIT, # False for LoRA 16bit
     fast_inference = True, # Enable vLLM fast inference
     max_lora_rank = lora_rank,
     gpu_memory_utilization = 0.6, # Reduce if out of memory
