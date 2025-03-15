@@ -7,6 +7,10 @@ python3 sampling_batch_inference.py --dataset gsm8k --model "unsloth/Llama-3.1-8
 Pass@8 (at least 1 correct): 1273/1319 (96.51%)
 Majority@8 (majority correct): 1133/1319 (85.90%)
 
+### 1050 steps
+Pass@8 (at least 1 correct): 1154/1319 (87.49%)
+Majority@8 (majority correct): 1130/1319 (85.67%)
+
 ### 4 bit merged model - baseline
 Pass@8 (at least 1 correct): 1143/1319 (86.66%)
 Majority@8 (majority correct): 1118/1319 (84.76%)
