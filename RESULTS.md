@@ -26,5 +26,3 @@ Majority@8 (majority correct): 1128/1319 (85.52%)
 ### 4bit merged model - baseline
 Pass@8 (at least 1 correct): 1186/1319 (89.92%)
 Majority@8 (majority correct): 1091/1319 (82.71%)
-
-
