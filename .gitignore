@@ -3,3 +3,6 @@ env/
 unsloth_compiled_cache/
 wandb/
 grpo_trainer_lora_model/
+outputs/
+grpo_saved_lora/
+llama-3.1-8b-grpo-4bit-merged/
