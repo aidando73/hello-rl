@@ -20,4 +20,7 @@ uv pip install datasets trl accelerate wandb
 tmux new -s grpo-summarization
 
 accelerate launch grpo-summarization.py
+accelerate launch --gpu_ids="0,1,2,3,5,6,7" grpo-summarization.py
+
+CUDA_VISIBLE_DEVICES=0,1,2,3,5,6,7 accelerate launch grpo-summarization.py
 ```
