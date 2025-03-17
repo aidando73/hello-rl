@@ -12,4 +12,6 @@ outputs/
 llama-3.1-8b-grpo-10500-merged/
 summarization-evals/
 llama-3.1-8b-grpo-19500-merged/
+llama-3.1-8b-grpo-33000-merged/
 Qwen2-0.5B-GRPO-checkpoints/
+grpo-summarization-evals/
