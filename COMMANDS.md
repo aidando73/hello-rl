@@ -15,7 +15,7 @@ python grpo.py
 
 For GRPO Summarization
 ```bash
-uv pip install datasets trl accelerate wandb
+uv pip install datasets trl accelerate wandb dotenv
 
 tmux new -s grpo-summarization
 
