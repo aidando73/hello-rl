@@ -21,7 +21,7 @@ repo_name = "aidando73/Qwen2-0.5B-summarize-SFT-2025-03-17-43773"
 
 # Load model and tokenizer from checkpoint
 model = AutoModelForCausalLM.from_pretrained(checkpoint_path)
-tokenizer = AutoTokenizer.from_pretrained(checkpoint_path)
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-0.5B-Instruct")
 
 print(f"Loaded model and tokenizer from {checkpoint_path}")
 
