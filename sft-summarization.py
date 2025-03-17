@@ -114,7 +114,8 @@ data_collator = DataCollatorForLanguageModeling(
 
 training_args = TrainingArguments(
     output_dir=output_dir,
-    eval_strategy="epoch",
+    eval_strategy="steps",
+    eval_steps=500,
     report_to = "wandb", 
     save_steps = 500,
     save_total_limit = 5,
