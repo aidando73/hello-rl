@@ -105,7 +105,7 @@ load_dotenv()
 
 output_dir = f"Qwen2-0.5B-SFT-{datetime.now().strftime('%Y-%m-%d-%H-%M')}"
 
-wandb.login(key=os.environ["WANDB_API_KEY"])
+wandb.login()
 
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
