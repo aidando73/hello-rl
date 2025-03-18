@@ -43,3 +43,9 @@ python3 sampling_batch_inference.py --dataset gsm8k --model "unsloth/Llama-3.1-8
 ### 4bit merged model - baseline
 - Pass@8 (at least 1 correct): 1186/1319 (89.92%)
 - Majority@8 (majority correct): 1091/1319 (82.71%)
+
+
+### Summarization training costs
+- $6.16/hr
+- 47 hrs total ran
+- $289.52 total
