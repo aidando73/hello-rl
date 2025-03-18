@@ -44,3 +44,13 @@ source ~/miniconda3/bin/activate ./env
 
 python sft-summarization.py
 ```
+
+
+Math round two
+```bash
+source ~/miniconda3/bin/activate && conda create -y --prefix ./math-v2 python=3.10
+source ~/miniconda3/bin/activate ./math-v2
+pip install uv
+
+uv pip install datasets numpy pandas matplotlib
+```
