@@ -19,7 +19,7 @@ python3 sampling_batch_inference.py --dataset gsm8k --model "unsloth/Llama-3.1-8
 ### 3300 steps
 - Pass@8 (at least 1 correct): 1277/1319 (96.82%)
 - Majority@8 (majority correct): 1272/1319 (96.44%)
-- pass@8 has now reached the baseline, and maj@k is significantly better
+- I beleive results are skewed due to LLM as a judge hallucinations
 
 ### 4 bit merged model - baseline
 - Pass@8 (at least 1 correct): 1143/1319 (86.66%)
