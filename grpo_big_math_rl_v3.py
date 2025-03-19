@@ -49,7 +49,8 @@ Respond in the following format:
 ...
 </reasoning>
 
-{{answer}}
+Answer:
+...
 """
 
 # uncomment middle messages for 1-shot prompting
@@ -83,7 +84,7 @@ def strict_format_reward_func(completions, **kwargs) -> list[float]:
 import wandb  # Add this import at the top with other imports
 import os
 
-wandb.init(project="grpo-big-math-rl-v2", name=RUN_NAME, description=DESCRIPTION)
+wandb.init(project="grpo-big-math-rl-v2", name=RUN_NAME, notes=DESCRIPTION)
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
