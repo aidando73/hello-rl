@@ -33,6 +33,7 @@ import re
 from datasets import load_dataset, Dataset
 import os
 from dotenv import load_dotenv
+from math_verify import parse, verify
 
 # Load environment variables from .env file
 load_dotenv()
@@ -63,8 +64,8 @@ def extract_xml_answer(text: str) -> str:
     return answer.strip()
 
 # uncomment middle messages for 1-shot prompting
-def get_gsm8k_questions(split = "train") -> Dataset:
-    data = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HF_TOKEN"))[split] # type: ignore
+def get_big_math_rl_questions(split = "train") -> Dataset:
+    data = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))[split] # type: ignore
     data = data.map(lambda x: { # type: ignore
         'prompt': [
             {'role': 'system', 'content': SYSTEM_PROMPT},
@@ -74,7 +75,7 @@ def get_gsm8k_questions(split = "train") -> Dataset:
     }) # type: ignore
     return data # type: ignore
 
-dataset = get_gsm8k_questions()
+dataset = get_big_math_rl_questions()
 
 # Reward functions
 def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[float]:
@@ -82,12 +83,7 @@ def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[floa
     q = prompts[0][-1]['content']
     extracted_responses = [extract_xml_answer(r) for r in responses]
     print('-'*20, f"Question:\n{q}", f"\nAnswer:\n{answer[0]}", f"\nResponse:\n{responses[0]}", f"\nExtracted:\n{extracted_responses[0]}")
-    return [2.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]
-
-def int_reward_func(completions, **kwargs) -> list[float]:
-    responses = [completion[0]['content'] for completion in completions]
-    extracted_responses = [extract_xml_answer(r) for r in responses]
-    return [0.5 if r.isdigit() else 0.0 for r in extracted_responses]
+    return [2.0 if verify(parse(r), parse(a)) else 0.0 for r, a in zip(extracted_responses, answer)]
 
 def strict_format_reward_func(completions, **kwargs) -> list[float]:
     """Reward function that checks if the completion has a specific format."""
