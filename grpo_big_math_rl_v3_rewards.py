@@ -12,7 +12,7 @@ def strict_format_reward_func(completions, **kwargs) -> list[float]:
     pattern = r"^<reasoning>.*</reasoning>.+"
     responses = [completion[0]["content"] for completion in completions]
     matches = [re.match(pattern, r, re.DOTALL) for r in responses]
-    return [2 if match else 0.0 for match in matches]
+    return [1 if match else 0.0 for match in matches]
 
 import unittest
 
@@ -166,7 +166,7 @@ class TestStrictFormatRewardFunc(unittest.TestCase):
         # Test with correctly formatted response
         completions = [[{'content': '<reasoning>\nThis is valid reasoning.\n</reasoning>\nThe answer is 42.'}]]
         result = strict_format_reward_func(completions)
-        self.assertEqual(result, [2])
+        self.assertEqual(result, [1])
     
     def test_incorrect_format_no_tags(self):
         # Test with no reasoning tags
@@ -194,7 +194,7 @@ class TestStrictFormatRewardFunc(unittest.TestCase):
             [{'content': '<reasoning>\nInvalid because it does not contain any text after the end tag.\n</reasoning>'}]
         ]
         result = strict_format_reward_func(completions)
-        self.assertEqual(result, [2, 0.0, 0.0])
+        self.assertEqual(result, [1, 0.0, 0.0])
     
     def test_empty_content(self):
         # Test with empty content
@@ -206,7 +206,7 @@ class TestStrictFormatRewardFunc(unittest.TestCase):
         # Test with multi-line reasoning
         completions = [[{'content': '<reasoning>\nLine 1\nLine 2\nLine 3\n</reasoning>\nAnswer: 42'}]]
         result = strict_format_reward_func(completions)
-        self.assertEqual(result, [2])
+        self.assertEqual(result, [1])
     
     def test_case_sensitivity(self):
         # Test case sensitivity of tags
