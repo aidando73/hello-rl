@@ -194,7 +194,7 @@ class TestStrictFormatRewardFunc(unittest.TestCase):
             [{'content': '<reasoning>\nInvalid because it does not contain any text after the end tag.\n</reasoning>'}]
         ]
         result = strict_format_reward_func(completions)
-        self.assertEqual(result, [1, 0.0, 1])
+        self.assertEqual(result, [1, 0.0, 0.0])
     
     def test_empty_content(self):
         # Test with empty content
