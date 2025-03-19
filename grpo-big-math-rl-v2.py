@@ -12,7 +12,8 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = MODEL_NAME,
     max_seq_length = max_seq_length,
     load_in_4bit = LOAD_IN_4BIT, # False for LoRA 16bit
-    fast_inference = True, # Enable vLLM fast inference
+    # Getting crashes related to vLLM
+    # fast_inference = True, # Enable vLLM fast inference
     max_lora_rank = lora_rank,
     gpu_memory_utilization = 0.6, # Reduce if out of memory
 )

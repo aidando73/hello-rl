@@ -66,6 +66,7 @@ uv pip install unsloth vllm wandb datasets dotenv math-verify
 uv pip install --upgrade pillow
 
 tmux new -s grpo-big-math-rl-v2
+source ~/miniconda3/bin/activate ./env
 
 python grpo-big-math-rl-v2.py
 ```
