@@ -4,7 +4,8 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
-RUN_NAME = "v2.2"
+RUN_NAME = "v2.3"
+DESCRIPTION = "Fix format rewards to include newlines within tags"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
 max_prompt_length = 1300
