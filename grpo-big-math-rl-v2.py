@@ -123,6 +123,7 @@ max_prompt_length = 256
 import wandb  # Add this import at the top with other imports
 import os
 
+wandb.init(project="grpo-big-math-rl-v2", name="math-v2-exploration")
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
