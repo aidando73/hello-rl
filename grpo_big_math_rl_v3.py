@@ -86,6 +86,7 @@ wandb.init(project="grpo-big-math-rl-v2", name="math-v2-exploration")
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
+from grpo_big_math_rl_v3_rewards import correctness_reward_func, strict_format_reward_func
 
 from trl import GRPOConfig, GRPOTrainer
 training_args = GRPOConfig(
@@ -121,8 +122,6 @@ trainer = GRPOTrainer(
     model = model,
     processing_class = tokenizer,
     reward_funcs = [
-        xmlcount_reward_func,
-        soft_format_reward_func,
         strict_format_reward_func,
         correctness_reward_func,
     ],
