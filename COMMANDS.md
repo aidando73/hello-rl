@@ -70,5 +70,5 @@ source ~/miniconda3/bin/activate ./math-rl-v2
 
 python grpo-big-math-rl-v2.py
 
-
+python grpo_big_math_rl_v3.py
 ```
