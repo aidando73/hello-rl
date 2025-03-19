@@ -34,6 +34,8 @@ python3 sampling_batch_inference.py --dataset gsm8k --model "unsloth/Llama-3.1-8
 - On an 1 x H100 SXM - 48 vCPU 188 GB RAM - $2.99/hr USD
 - $182.39 total
 
+## Big Math RL
+
 ## Qwen 2.5 3B Instruct
 
 ### Baseline

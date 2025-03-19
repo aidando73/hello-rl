@@ -31,6 +31,11 @@ model = FastLanguageModel.get_peft_model(
 
 import re
 from datasets import load_dataset, Dataset
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Load and prep dataset
 SYSTEM_PROMPT = """
@@ -57,20 +62,15 @@ def extract_xml_answer(text: str) -> str:
     answer = answer.split("</answer>")[0]
     return answer.strip()
 
-def extract_hash_answer(text: str) -> str | None:
-    if "####" not in text:
-        return None
-    return text.split("####")[1].strip()
-
 # uncomment middle messages for 1-shot prompting
 def get_gsm8k_questions(split = "train") -> Dataset:
-    data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
+    data = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HF_TOKEN"))[split] # type: ignore
     data = data.map(lambda x: { # type: ignore
         'prompt': [
             {'role': 'system', 'content': SYSTEM_PROMPT},
-            {'role': 'user', 'content': x['question']}
+            {'role': 'user', 'content': x['problem']}
         ],
-        'answer': extract_hash_answer(x['answer'])
+        'answer': x['answer']
     }) # type: ignore
     return data # type: ignore
 
