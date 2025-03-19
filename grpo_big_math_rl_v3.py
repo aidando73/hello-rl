@@ -4,7 +4,8 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
-RUN_NAME = "v2.2"
+RUN_NAME = "v3"
+DESCRIPTION = "Only 2 rewards: format and correctness"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
 max_prompt_length = 1300
@@ -82,7 +83,7 @@ def strict_format_reward_func(completions, **kwargs) -> list[float]:
 import wandb  # Add this import at the top with other imports
 import os
 
-wandb.init(project="grpo-big-math-rl-v2", name="math-v2-exploration")
+wandb.init(project="grpo-big-math-rl-v2", name=RUN_NAME, description=DESCRIPTION)
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
