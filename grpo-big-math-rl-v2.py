@@ -4,8 +4,10 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
+RUN_NAME = "v2.2"
 
-max_seq_length = 1024 # Can increase for longer reasoning traces
+max_seq_length = 4096 # Can increase for longer reasoning traces
+max_prompt_length = 1300
 lora_rank = 32 # Larger rank = smarter, but slower
 
 model, tokenizer = FastLanguageModel.from_pretrained(
@@ -119,12 +121,11 @@ def xmlcount_reward_func(completions, **kwargs) -> list[float]:
     return [count_xml(c) for c in contents]
 
 
-max_prompt_length = 256
 
 import wandb  # Add this import at the top with other imports
 import os
 
-wandb.init(project="grpo-big-math-rl-v2", name="math-v2-exploration")
+wandb.init(project="grpo-big-math-rl-v2", name=RUN_NAME)
 wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
