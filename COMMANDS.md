@@ -52,7 +52,7 @@ source ~/miniconda3/bin/activate && conda create -y --prefix ./math-v2 python=3.
 source ~/miniconda3/bin/activate ./math-v2
 pip install uv
 
-uv pip install datasets numpy pandas matplotlib dotenv math-verify
+uv pip install datasets numpy pandas matplotlib dotenv math-verify transformers
 ```
 
 
