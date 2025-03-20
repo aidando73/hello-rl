@@ -120,6 +120,26 @@ def compute_metrics(eval_preds):
     
     return results
 
+from transformers import TrainerCallback
+
+class EvaluationCallback(TrainerCallback):
+    def on_evaluate(self, args, state, control, **kwargs):
+        model = kwargs['model']
+
+        predictions = model.generate(
+            [x['prompt'] for x in val_dataset],
+            max_new_tokens=max_seq_length - max_prompt_length,
+            num_return_sequences=1,
+            eos_token_id=tokenizer.eos_token_id,
+        )
+
+        # Run your evaluation here
+        results = compute_metrics(predictions, [x['answer'] for x in val_dataset])  # Your evaluation logic
+        wandb.log({
+            "pass@1": results["pass@1"],
+            "step": state.global_step
+        })
+
 # Set the compute_metrics function in the training arguments
 
 from trl import GRPOConfig, GRPOTrainer
@@ -144,9 +164,9 @@ training_args = GRPOConfig(
     max_prompt_length = max_prompt_length,
     max_completion_length = max_seq_length - max_prompt_length,
     num_train_epochs = 100, # Set to 1 for a full training run
-    evaluation_strategy = "steps",
-    eval_steps = 500,
-    per_device_eval_batch_size = 1,
+    eval_strategy = "steps",
+    eval_steps = 2,
+    per_device_eval_batch_size = 8,
 
     # max_steps = 250,
     save_steps = 500,
@@ -166,7 +186,7 @@ trainer = GRPOTrainer(
     args = training_args,
     train_dataset = train_dataset,
     eval_dataset = val_dataset,
-    compute_metrics = compute_metrics,
+    callbacks=[EvaluationCallback()]
 )
 trainer.train()
 
