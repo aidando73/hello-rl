@@ -111,35 +111,14 @@ def compute_metrics(eval_preds):
     # Extract predictions and references
     predictions, references = eval_preds
 
-    
-    # Process predictions and references for evaluation
-    processed_preds = []
-    processed_refs = []
-    
-    # Extract the actual predictions and references
-    for pred, ref in tqdm(zip(predictions, references), desc="Processing predictions", total=len(predictions)):
-        # Clean up prediction - get the actual answer part
-        # Assuming the prediction might contain the full response
-        pred_text = pred.strip()
-        # Try to extract just the answer part if it follows a specific format
-        answer_match = re.search(r'(?:answer|solution)(?:\s+is)?(?:\s*:)?\s*(.*)', pred_text, re.IGNORECASE)
-        if answer_match:
-            pred_text = answer_match.group(1).strip()
-        
-        # Clean up reference
-        ref_text = ref.strip()
-        
-        processed_preds.append(pred_text)
-        processed_refs.append(ref_text)
-    
     # Calculate pass@1 using math_verify
     correct_count = 0
-    for pred, ref in zip(processed_preds, processed_refs):
+    for pred, ref in zip(predictions, references):
         is_correct = verify(parse(ref), parse(pred))
         if is_correct:
             correct_count += 1
     
-    pass_at_1 = correct_count / len(processed_refs) if processed_refs else 0
+    pass_at_1 = correct_count / len(references) if references else 0
     
     # You can implement custom metrics here
     # For example, accuracy, F1 score, etc.
