@@ -55,33 +55,25 @@ Answer:
 
 # uncomment middle messages for 1-shot prompting
 dataset = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))["train"]
-# Split the dataset into training and validation sets
-import random
-
 # Define the train/validation split ratio
 validation_size = 0.02  # 2% for validation
 
-# Set random seed for reproducibility
-random.seed(42)
+# Split the dataset into training and validation sets
+from sklearn.model_selection import train_test_split
 
-# Get the total size of the dataset
-dataset_size = len(dataset)
-val_size = int(dataset_size * validation_size)
+# Get the indices for the split
+train_indices, val_indices = train_test_split(
+    range(len(dataset)),
+    test_size=validation_size,
+    random_state=42  # For reproducibility
+)
 
-# Create a random list of indices for validation
-val_indices = random.sample(range(dataset_size), val_size)
-val_indices_set = set(val_indices)
-
-# Split the dataset
-train_dataset = [dataset[i] for i in range(dataset_size) if i not in val_indices_set]
-val_dataset = [dataset[i] for i in val_indices]
+# Create the train and validation datasets
+train_dataset = dataset.select(train_indices)
+val_dataset = dataset.select(val_indices)
 
 print(f"Training set size: {len(train_dataset)}")
 print(f"Validation set size: {len(val_dataset)}")
-
-# Convert back to Dataset objects
-train_dataset = Dataset.from_dict(train_dataset)
-val_dataset = Dataset.from_dict(val_dataset)
 
 def map_data(data):
     return data.map(lambda x: { # type: ignore

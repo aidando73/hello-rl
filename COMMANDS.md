@@ -80,7 +80,7 @@ source ~/miniconda3/bin/activate && conda create --prefix ./math-rl-v4 python=3.
 source ~/miniconda3/bin/activate ./math-rl-v4
 pip install uv
 
-uv pip install unsloth vllm wandb datasets dotenv math-verify
+uv pip install unsloth vllm wandb datasets dotenv math-verify scikit-learn
 uv pip install --upgrade pillow
 
 tmux new -s grpo-big-math-rl-v4
