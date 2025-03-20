@@ -99,49 +99,49 @@ import re
 from math_verify import verify, parse
 from tqdm import tqdm
 
-def compute_metrics(eval_preds):
-    # Extract predictions and references
-    predictions, references = eval_preds
+# def compute_metrics(eval_preds):
+#     # Extract predictions and references
+#     predictions, references = eval_preds
 
-    # Calculate pass@1 using math_verify
-    correct_count = 0
-    for pred, ref in zip(predictions, references):
-        is_correct = verify(parse(ref), parse(pred))
-        if is_correct:
-            correct_count += 1
+#     # Calculate pass@1 using math_verify
+#     correct_count = 0
+#     for pred, ref in zip(predictions, references):
+#         is_correct = verify(parse(ref), parse(pred))
+#         if is_correct:
+#             correct_count += 1
     
-    pass_at_1 = correct_count / len(references) if references else 0
+#     pass_at_1 = correct_count / len(references) if references else 0
     
-    # You can implement custom metrics here
-    # For example, accuracy, F1 score, etc.
-    results = {
-        "pass@1": pass_at_1,
-    }
+#     # You can implement custom metrics here
+#     # For example, accuracy, F1 score, etc.
+#     results = {
+#         "pass@1": pass_at_1,
+#     }
     
-    return results
+#     return results
 
 from transformers import TrainerCallback
 
-class EvaluationCallback(TrainerCallback):
-    def on_evaluate(self, args, state, control, **kwargs):
-        print("Running evaluation...")
-        model = kwargs['model']
+# class EvaluationCallback(TrainerCallback):
+#     def on_evaluate(self, args, state, control, **kwargs):
+#         print("Running evaluation...")
+#         model = kwargs['model']
 
-        print("Running inference...")
-        predictions = model.generate(
-            [x['prompt'] for x in val_dataset],
-            max_new_tokens=max_seq_length - max_prompt_length,
-            num_return_sequences=1,
-            eos_token_id=tokenizer.eos_token_id,
-        )
-        print("Inference complete.")
-        
-        # Run your evaluation here
-        results = compute_metrics(predictions, [x['answer'] for x in val_dataset])  # Your evaluation logic
-        wandb.log({
-            "pass@1": results["pass@1"],
-            "step": state.global_step
-        })
+#         print("Running inference...")
+#         predictions = model.generate(
+#             [x['prompt'] for x in val_dataset],
+#             max_new_tokens=max_seq_length - max_prompt_length,
+#             num_return_sequences=1,
+#             eos_token_id=tokenizer.eos_token_id,
+#         )
+#         print("Inference complete.")
+
+#         # Run your evaluation here
+#         results = compute_metrics(predictions, [x['answer'] for x in val_dataset])  # Your evaluation logic
+#         wandb.log({
+#             "pass@1": results["pass@1"],
+#             "step": state.global_step
+#         })
 
 # Set the compute_metrics function in the training arguments
 
@@ -168,7 +168,7 @@ training_args = GRPOConfig(
     max_completion_length = max_seq_length - max_prompt_length,
     num_train_epochs = 100, # Set to 1 for a full training run
     eval_strategy = "steps",
-    eval_steps = 2,
+    eval_steps = 500,
     per_device_eval_batch_size = 8,
 
     # max_steps = 250,
@@ -189,7 +189,6 @@ trainer = GRPOTrainer(
     args = training_args,
     train_dataset = train_dataset,
     eval_dataset = val_dataset,
-    callbacks=[EvaluationCallback()]
 )
 trainer.train()
 
