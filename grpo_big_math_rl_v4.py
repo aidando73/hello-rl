@@ -54,18 +54,46 @@ Answer:
 """
 
 # uncomment middle messages for 1-shot prompting
-def get_big_math_rl_questions(split = "train") -> Dataset:
-    data = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))[split] # type: ignore
-    data = data.map(lambda x: { # type: ignore
+dataset = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))["train"]
+# Split the dataset into training and validation sets
+import random
+
+# Define the train/validation split ratio
+validation_size = 0.02  # 2% for validation
+
+# Set random seed for reproducibility
+random.seed(42)
+
+# Get the total size of the dataset
+dataset_size = len(dataset)
+val_size = int(dataset_size * validation_size)
+
+# Create a random list of indices for validation
+val_indices = random.sample(range(dataset_size), val_size)
+val_indices_set = set(val_indices)
+
+# Split the dataset
+train_dataset = [dataset[i] for i in range(dataset_size) if i not in val_indices_set]
+val_dataset = [dataset[i] for i in val_indices]
+
+print(f"Training set size: {len(train_dataset)}")
+print(f"Validation set size: {len(val_dataset)}")
+
+# Convert back to Dataset objects
+train_dataset = Dataset.from_dict(train_dataset)
+val_dataset = Dataset.from_dict(val_dataset)
+
+def map_data(data):
+    return data.map(lambda x: { # type: ignore
         'prompt': [
             {'role': 'system', 'content': SYSTEM_PROMPT},
             {'role': 'user', 'content': x['problem']}
         ],
         'answer': x['answer']
     }) # type: ignore
-    return data # type: ignore
 
-dataset = get_big_math_rl_questions()
+train_dataset = map_data(train_dataset)
+val_dataset = map_data(val_dataset)
 
 import wandb  # Add this import at the top with other imports
 import os
@@ -75,6 +103,53 @@ wandb.login(key=os.getenv("WANDB_API_KEY"))
 
 from unsloth import is_bfloat16_supported
 from grpo_big_math_rl_v3_rewards import correctness_reward_func, strict_format_reward_func
+import re
+from math_verify import verify, parse
+from tqdm import tqdm
+
+def compute_metrics(eval_preds):
+    # Extract predictions and references
+    predictions, references = eval_preds
+
+    
+    # Process predictions and references for evaluation
+    processed_preds = []
+    processed_refs = []
+    
+    # Extract the actual predictions and references
+    for pred, ref in tqdm(zip(predictions, references), desc="Processing predictions", total=len(predictions)):
+        # Clean up prediction - get the actual answer part
+        # Assuming the prediction might contain the full response
+        pred_text = pred.strip()
+        # Try to extract just the answer part if it follows a specific format
+        answer_match = re.search(r'(?:answer|solution)(?:\s+is)?(?:\s*:)?\s*(.*)', pred_text, re.IGNORECASE)
+        if answer_match:
+            pred_text = answer_match.group(1).strip()
+        
+        # Clean up reference
+        ref_text = ref.strip()
+        
+        processed_preds.append(pred_text)
+        processed_refs.append(ref_text)
+    
+    # Calculate pass@1 using math_verify
+    correct_count = 0
+    for pred, ref in zip(processed_preds, processed_refs):
+        is_correct = verify(parse(ref), parse(pred))
+        if is_correct:
+            correct_count += 1
+    
+    pass_at_1 = correct_count / len(processed_refs) if processed_refs else 0
+    
+    # You can implement custom metrics here
+    # For example, accuracy, F1 score, etc.
+    results = {
+        "pass@1": pass_at_1,
+    }
+    
+    return results
+
+# Set the compute_metrics function in the training arguments
 
 from trl import GRPOConfig, GRPOTrainer
 training_args = GRPOConfig(
@@ -98,6 +173,12 @@ training_args = GRPOConfig(
     max_prompt_length = max_prompt_length,
     max_completion_length = max_seq_length - max_prompt_length,
     num_train_epochs = 100, # Set to 1 for a full training run
+    evaluation_strategy = "steps",
+    eval_steps = 500,
+    per_device_eval_batch_size = 1,
+    # Define the compute_metrics function for evaluation
+    compute_metrics=compute_metrics,
+
     # max_steps = 250,
     save_steps = 500,
     save_total_limit = 5,
@@ -114,7 +195,8 @@ trainer = GRPOTrainer(
         correctness_reward_func,
     ],
     args = training_args,
-    train_dataset = dataset,
+    train_dataset = train_dataset,
+    eval_dataset = val_dataset,
 )
 trainer.train()
 
