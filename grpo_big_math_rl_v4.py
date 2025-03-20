@@ -4,8 +4,9 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
-RUN_NAME = "v4.1"
-DESCRIPTION = "With validation set and with better prompt"
+RUN_NAME = "v4.3"
+HUB_NAME = "aidando73/grpo-big-math-rl-" + RUN_NAME
+DESCRIPTION = "Fix issue with configuration"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
 max_prompt_length = 1471
@@ -17,8 +18,8 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     load_in_4bit = LOAD_IN_4BIT, # False for LoRA 16bit
     # Getting crashes related to vLLM
     # fast_inference = True, # Enable vLLM fast inference
+    # gpu_memory_utilization = 0.6, # Reduce if out of memory
     max_lora_rank = lora_rank,
-    gpu_memory_utilization = 0.6, # Reduce if out of memory
 )
 
 model = FastLanguageModel.get_peft_model(
@@ -64,7 +65,7 @@ The answer is 14.
 # uncomment middle messages for 1-shot prompting
 dataset = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))["train"]
 # Define the train/validation split ratio
-validation_size = 0.02  # 2% for validation
+validation_size = 0.004  # 0.4% for validation - 1000 samples
 
 # Split the dataset into training and validation sets
 from sklearn.model_selection import train_test_split
@@ -169,22 +170,25 @@ training_args = GRPOConfig(
     lr_scheduler_type = "cosine",
     optim = "paged_adamw_8bit",
     logging_steps = 1,
-    per_device_train_batch_size = 1,
+    per_device_train_batch_size = 4,
     gradient_accumulation_steps = 1, # Increase to 4 for smoother training
     num_generations = 8, # Decrease if out of memory
     max_prompt_length = max_prompt_length,
     max_completion_length = max_seq_length - max_prompt_length,
     num_train_epochs = 100, # Set to 1 for a full training run
     eval_strategy = "steps",
-    eval_steps = 500,
+    eval_steps = 2,
     per_device_eval_batch_size = 8,
 
     # max_steps = 250,
-    save_steps = 500,
+    save_steps = 1,
     save_total_limit = 5,
     max_grad_norm = 0.1,
     report_to = "wandb", # Can use Weights & Biases
     output_dir = "outputs",
+    push_to_hub = True,
+    hub_model_id = HUB_NAME,
+    save_strategy = "all_checkpoints",
 )
 
 trainer = GRPOTrainer(
