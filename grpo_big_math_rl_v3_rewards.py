@@ -11,6 +11,10 @@ def strict_format_reward_func(completions, **kwargs) -> list[float]:
     """Reward function that checks if the completion has a specific format."""
     pattern = r"^<reasoning>.*</reasoning>.+"
     responses = [completion[0]["content"] for completion in completions]
+    print(f"\nResponse 1:")
+    print(responses[0])
+    print(f"Response 1 matches: {re.match(pattern, responses[0], re.DOTALL)}")
+    print("-" * 40)
     matches = [re.match(pattern, r, re.DOTALL) for r in responses]
     return [1 if match else 0.0 for match in matches]
 

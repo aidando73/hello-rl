@@ -4,8 +4,8 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
-RUN_NAME = "v3"
-DESCRIPTION = "Only 2 rewards: format and correctness"
+RUN_NAME = "v3.2"
+DESCRIPTION = "Fix bug related to incorrect reward functions"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
 max_prompt_length = 1300
@@ -66,20 +66,6 @@ def get_big_math_rl_questions(split = "train") -> Dataset:
     return data # type: ignore
 
 dataset = get_big_math_rl_questions()
-
-# Reward functions
-def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[float]:
-    responses = [completion[0]['content'] for completion in completions]
-    q = prompts[0][-1]['content']
-    print('-'*20, f"Question:\n{q}", f"\nAnswer:\n{answer[0]}", f"\nResponse:\n{responses[0]}")
-    return [2.0 if verify(parse(r), parse(a)) else 0.0 for r, a in zip(responses, answer)]
-
-def strict_format_reward_func(completions, **kwargs) -> list[float]:
-    """Reward function that checks if the completion has a specific format."""
-    pattern = r"^<reasoning>\n.*?\n</reasoning>"
-    responses = [completion[0]["content"] for completion in completions]
-    matches = [re.match(pattern, r) for r in responses]
-    return [1 if match else 0.0 for match in matches]
 
 import wandb  # Add this import at the top with other imports
 import os
