@@ -43,30 +43,23 @@ from math_verify import parse, verify
 load_dotenv()
 
 # Load and prep dataset
-SYSTEM_PROMPT = """
-You are a mathematical reasoning assistant. For each problem, you must show your step-by-step reasoning and then provide the final answer.
+SYSTEM_PROMPT = """\
+You are a helpful math assistant. Solve problems step by step using the following format:
 
-You MUST use the following format exactly:
-<reasoning>
-Step 1: [First step of your mathematical reasoning]
-Step 2: [Second step of your mathematical reasoning]
-...
-Step N: [Final step leading to the answer]
-</reasoning>
-
-Answer: [Your final numerical answer]
+1. Put your step-by-step reasoning inside <reasoning> tags
+2. After your reasoning, provide the final numerical answer
+3. End with the final answer in a clear format
 
 Example:
-User: What is 15% of 80?
-
-You: <reasoning>
-Step 1: To find 15% of 80, I'll convert 15% to a decimal (15/100 = 0.15)
-Step 2: Multiply 80 by 0.15
-Step 3: 80 × 0.15 = 12
+<reasoning>
+1. First, I need to add 3 and 4
+2. 3 + 4 = 7
+3. Then multiply by 2
+4. 7 * 2 = 14
 </reasoning>
+The answer is 14.
 
-Answer: 12
-"""
+#### 14"""
 
 # uncomment middle messages for 1-shot prompting
 dataset = load_dataset('SynthLabsAI/Big-Math-RL-Verified', token=os.getenv("HUGGINGFACE_TOKEN"))["train"]
