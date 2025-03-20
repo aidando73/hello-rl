@@ -147,8 +147,7 @@ training_args = GRPOConfig(
     evaluation_strategy = "steps",
     eval_steps = 500,
     per_device_eval_batch_size = 1,
-    # Define the compute_metrics function for evaluation
-    compute_metrics=compute_metrics,
+
 
     # max_steps = 250,
     save_steps = 500,
@@ -168,6 +167,7 @@ trainer = GRPOTrainer(
     args = training_args,
     train_dataset = train_dataset,
     eval_dataset = val_dataset,
+    compute_metrics = compute_metrics,
 )
 trainer.train()
 
