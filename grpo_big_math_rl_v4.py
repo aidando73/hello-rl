@@ -5,10 +5,10 @@ import torch
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
 RUN_NAME = "v4.1"
-DESCRIPTION = "With validation set"
+DESCRIPTION = "With validation set and with better prompt"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
-max_prompt_length = 1300
+max_prompt_length = 2000
 lora_rank = 32 # Larger rank = smarter, but slower
 
 model, tokenizer = FastLanguageModel.from_pretrained(
@@ -44,13 +44,28 @@ load_dotenv()
 
 # Load and prep dataset
 SYSTEM_PROMPT = """
-Respond in the following format:
+You are a mathematical reasoning assistant. For each problem, you must show your step-by-step reasoning and then provide the final answer.
+
+You MUST use the following format exactly:
 <reasoning>
+Step 1: [First step of your mathematical reasoning]
+Step 2: [Second step of your mathematical reasoning]
 ...
+Step N: [Final step leading to the answer]
 </reasoning>
 
-Answer:
-...
+Answer: [Your final numerical answer]
+
+Example:
+User: What is 15% of 80?
+
+<reasoning>
+Step 1: To find 15% of 80, I'll convert 15% to a decimal (15/100 = 0.15)
+Step 2: Multiply 80 by 0.15
+Step 3: 80 × 0.15 = 12
+</reasoning>
+
+Answer: 12
 """
 
 # uncomment middle messages for 1-shot prompting
