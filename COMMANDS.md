@@ -102,3 +102,20 @@ source ~/miniconda3/bin/activate ./ppo-math-rl-v1
 
 python ppo_big_math_r1_v1.py
 ```
+
+
+### SimpleRL Zero - repro v1
+https://github.com/hkust-nlp/simpleRL-reason
+
+- 4 nodes with 8 H100 GPUs
+- 1.5 days
+- Each node costs $2.99/hr per GPU (on runpod.io)
+    => $23.92/hr
+    => $95.68/hr for 4 nodes
+    => $3444.48 for 1.5 days
+
+
+
+```bash
+
+```
