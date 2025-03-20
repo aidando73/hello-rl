@@ -214,5 +214,41 @@ class TestStrictFormatRewardFunc(unittest.TestCase):
         result = strict_format_reward_func(completions)
         self.assertEqual(result, [0.0])
 
+class TestCorrectnessRewardFunc(unittest.TestCase):
+    def test_correct_answer(self):
+        # Test when the extracted answer matches the expected answer
+        prompts = [[{'content': 'What is 2+2?'}]]
+        completions = [[{'content': '<reasoning>\nTo find 2+2, I add the numbers.\n2+2=4\n</reasoning>\nAnswer: 4'}]]
+        answer = ['4']
+        result = correctness_reward_func(prompts, completions, answer)
+        self.assertEqual(result, [2.0])
+    
+    def test_incorrect_answer(self):
+        # Test when the extracted answer doesn't match the expected answer
+        prompts = [[{'content': 'What is 2+2?'}]]
+        completions = [[{'content': '<reasoning>\nI think 2+2=5\n</reasoning>\nAnswer: 5'}]]
+        answer = ['4']
+        result = correctness_reward_func(prompts, completions, answer)
+        self.assertEqual(result, [0.0])
+    
+    def test_multiple_answers(self):
+        # Test with multiple completions, some correct, some incorrect
+        prompts = [[{'content': 'What is 2+2?'}], [{'content': 'What is 3+3?'}]]
+        completions = [
+            [{'content': '<reasoning>\n2+2=4\n</reasoning>\nAnswer: 4'}],
+            [{'content': '<reasoning>\n3+3=7\n</reasoning>\nAnswer: 7'}]
+        ]
+        answer = ['4', '6']
+        result = correctness_reward_func(prompts, completions, answer)
+        self.assertEqual(result, [2.0, 0.0])
+    
+    def test_complex_math_answer(self):
+        # Test with more complex mathematical expressions
+        prompts = [[{'content': 'Solve x^2 = 9'}]]
+        completions = [[{'content': '<reasoning>\nx^2 = 9\nx = ±3\n</reasoning>\nAnswer: x = 3 or x = -3'}]]
+        answer = ['x = 3 or x = -3']
+        result = correctness_reward_func(prompts, completions, answer)
+        self.assertEqual(result, [2.0])
+
 if __name__ == '__main__':
     unittest.main()
