@@ -8,7 +8,7 @@ RUN_NAME = "v4.1"
 DESCRIPTION = "With validation set and with better prompt"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
-max_prompt_length = 2000
+max_prompt_length = 1471
 lora_rank = 32 # Larger rank = smarter, but slower
 
 model, tokenizer = FastLanguageModel.from_pretrained(
@@ -59,7 +59,7 @@ Answer: [Your final numerical answer]
 Example:
 User: What is 15% of 80?
 
-<reasoning>
+You: <reasoning>
 Step 1: To find 15% of 80, I'll convert 15% to a decimal (15/100 = 0.15)
 Step 2: Multiply 80 by 0.15
 Step 3: 80 × 0.15 = 12
