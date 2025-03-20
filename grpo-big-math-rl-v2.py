@@ -91,8 +91,15 @@ def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[floa
 
 def strict_format_reward_func(completions, **kwargs) -> list[float]:
     """Reward function that checks if the completion has a specific format."""
-    pattern = r"^<reasoning>\n.*?\n</reasoning>\n<answer>\n.*?\n</answer>\n$"
+    pattern = r"^<reasoning>\n.*?\n</reasoning>\s*<answer>\n.*?\n</answer>\s*$"
     responses = [completion[0]["content"] for completion in completions]
+    # Pretty print the responses for better readability
+    print("\nResponses:")
+    for i, r in enumerate(responses):
+        print(f"\nResponse {i+1}:")
+        print(r)
+        print(f"Response {i+1} matches: {re.match(pattern, r, re.DOTALL)}")
+        print("-" * 40)
     matches = [re.match(pattern, r, re.DOTALL) for r in responses]
     return [0.5 if match else 0.0 for match in matches]
 
