@@ -124,15 +124,18 @@ from transformers import TrainerCallback
 
 class EvaluationCallback(TrainerCallback):
     def on_evaluate(self, args, state, control, **kwargs):
+        print("Running evaluation...")
         model = kwargs['model']
 
+        print("Running inference...")
         predictions = model.generate(
             [x['prompt'] for x in val_dataset],
             max_new_tokens=max_seq_length - max_prompt_length,
             num_return_sequences=1,
             eos_token_id=tokenizer.eos_token_id,
         )
-
+        print("Inference complete.")
+        
         # Run your evaluation here
         results = compute_metrics(predictions, [x['answer'] for x in val_dataset])  # Your evaluation logic
         wandb.log({
