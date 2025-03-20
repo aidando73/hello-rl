@@ -88,3 +88,17 @@ source ~/miniconda3/bin/activate ./math-rl-v4
 
 python grpo_big_math_rl_v4.py
 ```
+
+
+### PPO Math rl v1
+```bash
+source ~/miniconda3/bin/activate && conda create --prefix ./ppo-math-rl-v1 python=3.10
+source ~/miniconda3/bin/activate ./ppo-math-rl-v1
+pip install uv
+uv pip install trl
+
+tmux new -s ppo-big-math-rl-v1
+source ~/miniconda3/bin/activate ./ppo-math-rl-v1
+
+python ppo_big_math_r1_v1.py
+```
