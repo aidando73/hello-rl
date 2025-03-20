@@ -16,7 +16,7 @@ def strict_format_reward_func(completions, **kwargs) -> list[float]:
     print(f"Response 1 matches: {re.match(pattern, responses[0], re.DOTALL)}")
     print("-" * 40)
     matches = [re.match(pattern, r, re.DOTALL) for r in responses]
-    return [1 if match else 0.0 for match in matches]
+    return [2.0 if match else 0.0 for match in matches]
 
 import unittest
 
