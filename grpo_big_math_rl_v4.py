@@ -4,8 +4,8 @@ import torch
 # MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 MODEL_NAME = "meta-llama/meta-Llama-3.1-8B-Instruct"
 LOAD_IN_4BIT = False
-RUN_NAME = "v4.1"
-DESCRIPTION = "With validation set and with better prompt"
+RUN_NAME = "v4.2"
+DESCRIPTION = "With validation set and with better prompt + 4 batch size"
 
 max_seq_length = 4096 # Can increase for longer reasoning traces
 max_prompt_length = 1471
@@ -169,7 +169,7 @@ training_args = GRPOConfig(
     lr_scheduler_type = "cosine",
     optim = "paged_adamw_8bit",
     logging_steps = 1,
-    per_device_train_batch_size = 1,
+    per_device_train_batch_size = 4,
     gradient_accumulation_steps = 1, # Increase to 4 for smoother training
     num_generations = 8, # Decrease if out of memory
     max_prompt_length = max_prompt_length,
